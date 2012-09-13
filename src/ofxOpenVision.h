@@ -21,13 +21,14 @@ public:
 	ofShader& getShader() {
 		return shader;
 	}
+	
+	void loadShaderFile(string filename) {
+	}
+	
+	void loadShaderSource(string source) {
+	}
 
-protected:
-
-	void allocate(int width, int height, string shaderFile, int internalFormat = GL_RGB, bool useArbTex = true) {
-
-		// Load shader
-		shader.load("", shaderFile);
+	void allocate(int width, int height, int internalFormat = GL_RGB, bool useArbTex = true) {
 		
 		// Allocate framebuffer object
 		ofFbo::Settings settings;
@@ -35,13 +36,18 @@ protected:
 		settings.height = height;
 		settings.internalformat = internalFormat;
 		settings.textureTarget = useArbTex ? GL_TEXTURE_RECTANGLE_ARB : GL_TEXTURE_2D;
-		ofFbo::allocate(settings);
+		ofFbo::allocate(settings);		
+	}
+	
+	void clear() {
 		
 		// Clear the framebuffer object
 		ofFbo::begin();
 		ofClear(0, 0, 0, 255);
 		ofFbo::end();
 	}
-
+	
+protected:
+	
 	ofShader shader;
 };
