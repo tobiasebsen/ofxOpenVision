@@ -18,6 +18,6 @@ public:
 		loadShaderSource(sobelSource);
 	}
 	void draw() {
-		getFirstTexture().draw(0, 0);
+		tex0->draw(0, 0);
 	}
 };

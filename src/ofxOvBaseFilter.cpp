@@ -3,7 +3,7 @@
  *  openVisionTest
  *
  *  Created by Tobias Ebsen on 9/14/12.
- *  Copyright 2012 __MyCompanyName__. All rights reserved.
+ *  Copyright 2012 Tobias Ebsen. All rights reserved.
  *
  */
 
@@ -15,26 +15,26 @@ ofxOvBaseFilter::ofxOvBaseFilter() {
 	tex1 = NULL;
 }
 //////////////////////////////////////////////////
-ofTexture& ofxOvBaseFilter::apply(ofTexture& texture) {
-	tex0 = &texture;
-	tex1 = &texture;
-	ofFbo::begin();
+void ofxOvBaseFilter::init() {
+	setup();
+	shader.linkProgram();
+}
+//////////////////////////////////////////////////
+ofTexture& ofxOvBaseFilter::applyTo(ofTexture& tex0, ofFbo& fbo) {
+	return applyTo(tex0, tex0, fbo);
+}
+//////////////////////////////////////////////////
+ofTexture& ofxOvBaseFilter::applyTo(ofTexture& tex0, ofTexture& tex1, ofFbo& fbo) {
+	this->tex0 = &tex0;
+	this->tex1 = &tex1;
+	
+	fbo.begin();
 	shader.begin();
 	draw();
 	shader.end();
-	ofFbo::end();
-	return ofFbo::getTextureReference();
-}
-//////////////////////////////////////////////////
-ofTexture& ofxOvBaseFilter::apply(ofTexture& tex0, ofTexture& tex1) {
-	this->tex0 = &tex0;
-	this->tex1 = &tex1;
-	ofFbo::begin();
-	shader.begin();
-	draw();
-	shader.begin();
-	ofFbo::end();
-	return ofFbo::getTextureReference();
+	fbo.end();
+	
+	return fbo.getTextureReference();
 }
 //////////////////////////////////////////////////
 void ofxOvBaseFilter::loadShaderFile(string filename) {
@@ -45,39 +45,6 @@ void ofxOvBaseFilter::loadShaderSource(string source) {
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, source);
 }
 //////////////////////////////////////////////////
-void ofxOvBaseFilter::allocate(int width, int height, int internalFormat, bool useArbTex) {
-	
-	// Allocate framebuffer object
-	ofFbo::Settings settings;
-	settings.width = width;
-	settings.height = height;
-	settings.internalformat = internalFormat;
-	settings.textureTarget = useArbTex ? GL_TEXTURE_RECTANGLE_ARB : GL_TEXTURE_2D;
-	ofFbo::allocate(settings);
-	
-	clear();
-	
-	setup();
-	
-	shader.linkProgram();
-}
-//////////////////////////////////////////////////
-void ofxOvBaseFilter::clear() {
-	
-	// Clear the framebuffer object
-	ofFbo::begin();
-	ofClear(0, 0, 0, 255);
-	ofFbo::end();
-}
-//////////////////////////////////////////////////
 ofShader& ofxOvBaseFilter::getShader() {
 	return shader;
-}
-//////////////////////////////////////////////////
-ofTexture& ofxOvBaseFilter::getFirstTexture() {
-	return *tex0;
-}
-//////////////////////////////////////////////////
-ofTexture& ofxOvBaseFilter::getSecondTexture() {
-	return *tex1;
 }

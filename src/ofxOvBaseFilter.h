@@ -10,32 +10,27 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOvBuffer.h"
 
-class ofxOvBaseFilter : public ofFbo {
+class ofxOvBaseFilter {
 public:
 	
 	ofxOvBaseFilter();
 	
+	void init();
+	
 	virtual void setup() = 0;
 	virtual void draw() = 0;
-	
-	ofTexture& apply(ofTexture& texture);
-	ofTexture& apply(ofTexture& tex0, ofTexture& tex1);
+		
+	ofTexture& applyTo(ofTexture& tex0, ofFbo& fbo);
+	ofTexture& applyTo(ofTexture& tex0, ofTexture& tex1, ofFbo& fbo);
 	
 	void loadShaderFile(string filename);
 	void loadShaderSource(string source);
-	
-	void allocate(int width, int height, int internalFormat = GL_RGB, bool useArbTex = true);
-	
-	void clear();
-	
+		
 	ofShader& getShader();
-	
-	ofTexture& getFirstTexture();
-	ofTexture& getSecondTexture();
-	
+		
 protected:
-	
 	ofShader shader;
 	ofTexture* tex0;
 	ofTexture* tex1;
